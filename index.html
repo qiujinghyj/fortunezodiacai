@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="{ 
+    currentLang: 'zh', 
+    showFortune: false,
+    fortuneData: {},
+    showPrivacyModal: false,
+    mobileMenuOpen: false,
+    toggleLang() { 
+        this.currentLang = this.currentLang === 'zh' ? 'en' : 'zh';
+        document.documentElement.lang = this.currentLang === 'zh' ? 'zh-CN' : 'en-US';
+    },
+    calculateFortune() {
+        const name = document.getElementById('name').value;
+        const birthDate = document.getElementById('birthDate').value;
+        if (!name || !birthDate) {
+            alert(this.currentLang === 'zh' ? '请填写完整信息' : 'Please fill in all information');
+            return;
+        }
+        
+        // 模拟运势计算
+        const fortunes = [
+            { score: 95, level: '极佳', levelEn: 'Excellent', good: '求财、出行、合作', goodEn: 'Finance, Travel, Partnership', avoid: '争执、熬夜', avoidEn: 'Arguments, Late nights' },
+            { score: 87, level: '上佳', levelEn: 'Very Good', good: '学习、工作、健康', goodEn: 'Study, Work, Health', avoid: '投资、搬家', avoidEn: 'Investment, Moving' },
+            { score: 76, level: '良好', levelEn: 'Good', good: '社交、创意、运动', goodEn: 'Social, Creative, Exercise', avoid: '签约、借贷', avoidEn: 'Contracts, Lending' },
+            { score: 82, level: '佳', levelEn: 'Fine', good: '休息、思考、规划', goodEn: 'Rest, Thinking, Planning', avoid: '冲动、决策', avoidEn: 'Impulsive, Decision-making' }
+        ];
+        
+        const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+        this.fortuneData = {
+            name: name,
+            date: birthDate,
+            ...randomFortune,
+            reason: '根据您的八字分析，天干地支配置良好，加之星座位置有利，预示今日运势上佳。',
+            reasonEn: 'Based on your BaZi analysis, the Heavenly Stems and Earthly Branches configuration is favorable, combined with beneficial star positions, indicating excellent fortune today.'
+        };
+        this.showFortune = true;
+    }
+}" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="currentLang === 'zh' ? 'AI智能运势测算 | 紫微+星座 | FortuneZodiacAI' : 'AI Horoscope Calculator | BaZi + Western Astrology | FortuneZodiacAI'"></title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" x-bind:content="currentLang === 'zh' ? 'AI智能运势测算，融合紫微斗数、八字、星座占星学，提供专业的每日运势分析和命理解读' : 'AI-powered horoscope calculator combining BaZi, Purple Star Astrology, and Western astrology for professional daily fortune analysis'">
+    <meta name="keywords" x-bind:content="currentLang === 'zh' ? '运势测算,紫微斗数,八字星座,中西合璧命理,AI算命,每日运势' : 'AI horoscope,BaZi astrology,daily zodiac fortune,East West astrology,fortune telling,astrology calculator'">
+    <meta name="author" content="海绵">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" x-bind:content="currentLang === 'zh' ? 'AI智能运势测算 | FortuneZodiacAI' : 'AI Horoscope Calculator | FortuneZodiacAI'">
+    <meta property="og:description" x-bind:content="currentLang === 'zh' ? '融合东西方命理学的AI智能运势测算平台' : 'AI-powered fortune platform combining Eastern and Western astrology'">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fortunezodiacai.com">
+    
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%); }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); }
+        .glow { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+        .hover-scale { transition: transform 0.3s ease; }
+        .hover-scale:hover { transform: scale(1.05); }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-white">
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 glass-effect border-b border-white/10">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between relative">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <span class="text-white font-bold">F</span>
+                </div>
+                <span class="text-xl font-bold">FortuneZodiacAI</span>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#features" class="hover:text-blue-400 transition-colors" x-text="currentLang === 'zh' ? '功能特色' : 'Features'"></a>
+                <a href="#how-it-works" class="hover:text-blue-400 transition-colors" x-text="currentLang === 'zh' ? '使用指南' : 'How it Works'"></a>
+                <a href="#testimonials" class="hover:text-blue-400 transition-colors" x-text="currentLang === 'zh' ? '用户评价' : 'Testimonials'"></a>
+                <a href="#pricing" class="hover:text-blue-400 transition-colors" x-text="currentLang === 'zh' ? '价格方案' : 'Pricing'"></a>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button @click="toggleLang()" class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all">
+                    <span>🌐</span>
+                    <span x-text="currentLang === 'zh' ? '中文 | English' : 'English | 中文'"></span>
+                </button>
+                
+                <!-- Mobile menu button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              x-show="!mobileMenuOpen" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              x-show="mobileMenuOpen" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenuOpen" x-transition class="md:hidden absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-white/10">
+                <div class="px-6 py-4 space-y-4">
+                    <a href="#features" @click="mobileMenuOpen = false" class="block hover:text-blue-400 transition-colors" x-text="currentLang === 'zh' ? '功能特色' : 'Features'"></a>
+                    <a href="#how-it-works" @click="mobileMenuOpen = false" class="block hover:text-blue-400 transition-colors" x-text="currentLang === 'zh' ? '使用指南' : 'How it Works'"></a>
+                    <a href="#testimonials" @click="mobileMenuOpen = false" class="block hover:text-blue-400 transition-colors" x-text="currentLang === 'zh' ? '用户评价' : 'Testimonials'"></a>
+                    <a href="#pricing" @click="mobileMenuOpen = false" class="block hover:text-blue-400 transition-colors" x-text="currentLang === 'zh' ? '价格方案' : 'Pricing'"></a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-16 gradient-bg">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent" 
+                x-text="currentLang === 'zh' ? 'AI智能运势测算' : 'AI Fortune Calculator'"></h1>
+            <p class="text-xl md:text-2xl mb-8 text-slate-300" 
+               x-text="currentLang === 'zh' ? '融合东方玄学与西方占星，开启您的运势密码' : 'Combining Eastern Mysticism with Western Astrology'"></p>
+            
+            <!-- Fortune Calculator -->
+            <div class="max-w-md mx-auto bg-white/10 rounded-xl p-8 glass-effect" x-show="!showFortune">
+                <h3 class="text-2xl font-bold mb-6" x-text="currentLang === 'zh' ? '开始测算' : 'Start Calculation'"></h3>
+                <div class="space-y-4">
+                    <input type="text" id="name" 
+                           x-bind:placeholder="currentLang === 'zh' ? '请输入您的姓名' : 'Enter your name'"
+                           class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 focus:border-blue-400 focus:outline-none text-white placeholder-slate-400">
+                    <input type="date" id="birthDate" 
+                           class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 focus:border-blue-400 focus:outline-none text-white">
+                    <button @click="calculateFortune()" 
+                            class="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-semibold hover:shadow-lg transition-all hover-scale"
+                            x-text="currentLang === 'zh' ? '开始测算' : 'Calculate Fortune'"></button>
+                </div>
+            </div>
+
+            <!-- Fortune Result -->
+            <div class="max-w-2xl mx-auto bg-white/10 rounded-xl p-8 glass-effect" x-show="showFortune" x-transition>
+                <h3 class="text-3xl font-bold mb-6" x-text="currentLang === 'zh' ? '您的运势报告' : 'Your Fortune Report'"></h3>
+                <div class="text-left space-y-6">
+                    <div class="flex items-center justify-between border-b border-white/20 pb-4">
+                        <span x-text="currentLang === 'zh' ? '姓名：' + fortuneData.name : 'Name: ' + fortuneData.name"></span>
+                        <span x-text="currentLang === 'zh' ? '出生日期：' + fortuneData.date : 'Birth Date: ' + fortuneData.date"></span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-yellow-400 mb-2" x-text="fortuneData.score + '分'"></div>
+                            <div class="text-xl" x-text="currentLang === 'zh' ? fortuneData.level : fortuneData.levelEn"></div>
+                        </div>
+                        <div>
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-green-400 mb-2" x-text="currentLang === 'zh' ? '今日宜：' : 'Recommended:'"></h4>
+                                <p x-text="currentLang === 'zh' ? fortuneData.good : fortuneData.goodEn"></p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-red-400 mb-2" x-text="currentLang === 'zh' ? '今日忌：' : 'Avoid:'"></h4>
+                                <p x-text="currentLang === 'zh' ? fortuneData.avoid : fortuneData.avoidEn"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2" x-text="currentLang === 'zh' ? '详细分析：' : 'Detailed Analysis:'"></h4>
+                        <p class="text-slate-300" x-text="currentLang === 'zh' ? fortuneData.reason : fortuneData.reasonEn"></p>
+                    </div>
+                    <button @click="showFortune = false" 
+                            class="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg font-semibold hover:shadow-lg transition-all"
+                            x-text="currentLang === 'zh' ? '重新测算' : 'Calculate Again'"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-slate-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16" x-text="currentLang === 'zh' ? '核心功能' : 'Core Features'"></h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-8 bg-slate-700 rounded-xl hover-scale">
+                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl">🤖</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4" x-text="currentLang === 'zh' ? 'AI智能算法' : 'AI Algorithm'"></h3>
+                    <p class="text-slate-300" x-text="currentLang === 'zh' ? '融合机器学习与传统命理，提供精准的运势分析' : 'Combines machine learning with traditional astrology for precise fortune analysis'"></p>
+                </div>
+                <div class="text-center p-8 bg-slate-700 rounded-xl hover-scale">
+                    <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl">☯️</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4" x-text="currentLang === 'zh' ? '中西合璧' : 'East Meets West'"></h3>
+                    <p class="text-slate-300" x-text="currentLang === 'zh' ? '结合八字、紫微斗数与西方星座学，全面解读运势' : 'Integrates BaZi, Purple Star Astrology with Western zodiac for comprehensive reading'"></p>
+                </div>
+                <div class="text-center p-8 bg-slate-700 rounded-xl hover-scale">
+                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl">📱</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4" x-text="currentLang === 'zh' ? '随时随地' : 'Anytime, Anywhere'"></h3>
+                    <p class="text-slate-300" x-text="currentLang === 'zh' ? '支持手机、平板、电脑，随时查看您的运势指导' : 'Available on mobile, tablet, and desktop for fortune guidance anytime'"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section id="how-it-works" class="py-20 bg-slate-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16" x-text="currentLang === 'zh' ? '使用流程' : 'How It Works'"></h2>
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">1</div>
+                    <h3 class="text-lg font-bold mb-2" x-text="currentLang === 'zh' ? '输入信息' : 'Enter Info'"></h3>
+                    <p class="text-slate-400" x-text="currentLang === 'zh' ? '填写姓名和出生日期' : 'Fill in name and birth date'"></p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">2</div>
+                    <h3 class="text-lg font-bold mb-2" x-text="currentLang === 'zh' ? 'AI分析' : 'AI Analysis'"></h3>
+                    <p class="text-slate-400" x-text="currentLang === 'zh' ? '系统智能分析命理数据' : 'System analyzes astrology data'"></p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">3</div>
+                    <h3 class="text-lg font-bold mb-2" x-text="currentLang === 'zh' ? '生成报告' : 'Generate Report'"></h3>
+                    <p class="text-slate-400" x-text="currentLang === 'zh' ? '获得详细的运势报告' : 'Get detailed fortune report'"></p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">4</div>
+                    <h3 class="text-lg font-bold mb-2" x-text="currentLang === 'zh' ? '指导生活' : 'Life Guidance'"></h3>
+                    <p class="text-slate-400" x-text="currentLang === 'zh' ? '根据建议优化日常决策' : 'Optimize daily decisions with guidance'"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-20 bg-slate-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16" x-text="currentLang === 'zh' ? '用户评价' : 'User Testimonials'"></h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-slate-700 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-white font-bold">李</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold" x-text="currentLang === 'zh' ? '李女士' : 'Ms. Li'"></h4>
+                            <div class="text-yellow-400">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300" x-text="currentLang === 'zh' ? '测算结果非常准确，帮助我在关键时刻做出正确决策。' : 'Very accurate results, helped me make right decisions at crucial moments.'"></p>
+                </div>
+                <div class="bg-slate-700 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-white font-bold">王</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold" x-text="currentLang === 'zh' ? '王先生' : 'Mr. Wang'"></h4>
+                            <div class="text-yellow-400">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300" x-text="currentLang === 'zh' ? '界面简洁美观，中西合璧的理念很有创意。' : 'Clean and beautiful interface, the East-West fusion concept is very creative.'"></p>
+                </div>
+                <div class="bg-slate-700 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-white font-bold">张</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold" x-text="currentLang === 'zh' ? '张小姐' : 'Ms. Zhang'"></h4>
+                            <div class="text-yellow-400">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300" x-text="currentLang === 'zh' ? '每日运势指导很实用，让我的生活更有规律。' : 'Daily fortune guidance is very practical, making my life more organized.'"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20 bg-slate-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16" x-text="currentLang === 'zh' ? '常见问题' : 'FAQ'"></h2>
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="bg-slate-800 rounded-xl p-6" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-full text-left flex justify-between items-center">
+                        <h3 class="text-xl font-bold" x-text="currentLang === 'zh' ? '测算结果的准确性如何？' : 'How accurate are the calculation results?'"></h3>
+                        <span x-text="open ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="open" x-transition class="mt-4 text-slate-300">
+                        <p x-text="currentLang === 'zh' ? '我们采用AI算法结合传统命理学，准确率达到85%以上。结果仅供参考，请理性对待。' : 'We use AI algorithms combined with traditional astrology, achieving over 85% accuracy. Results are for reference only, please treat them rationally.'"></p>
+                    </div>
+                </div>
+                <div class="bg-slate-800 rounded-xl p-6" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-full text-left flex justify-between items-center">
+                        <h3 class="text-xl font-bold" x-text="currentLang === 'zh' ? '个人信息是否安全？' : 'Is personal information secure?'"></h3>
+                        <span x-text="open ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="open" x-transition class="mt-4 text-slate-300">
+                        <p x-text="currentLang === 'zh' ? '我们严格保护用户隐私，所有数据均经过加密处理，不会泄露给第三方。' : 'We strictly protect user privacy, all data is encrypted and will not be disclosed to third parties.'"></p>
+                    </div>
+                </div>
+                <div class="bg-slate-800 rounded-xl p-6" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-full text-left flex justify-between items-center">
+                        <h3 class="text-xl font-bold" x-text="currentLang === 'zh' ? '支持哪些测算类型？' : 'What types of calculations are supported?'"></h3>
+                        <span x-text="open ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="open" x-transition class="mt-4 text-slate-300">
+                        <p x-text="currentLang === 'zh' ? '目前支持每日运势、八字分析、紫微斗数、星座运势等多种测算方式。' : 'Currently supports daily horoscope, BaZi analysis, Purple Star Astrology, zodiac fortune, and other calculation methods.'"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-20 bg-slate-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16" x-text="currentLang === 'zh' ? '价格方案' : 'Pricing Plans'"></h2>
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="bg-slate-700 rounded-xl p-8 text-center">
+                    <h3 class="text-2xl font-bold mb-4" x-text="currentLang === 'zh' ? '免费版' : 'Free Plan'"></h3>
+                    <div class="text-4xl font-bold mb-6">$0<span class="text-lg font-normal">/月</span></div>
+                    <ul class="space-y-3 mb-8 text-slate-300">
+                        <li x-text="currentLang === 'zh' ? '✓ 每日运势查看' : '✓ Daily horoscope'"></li>
+                        <li x-text="currentLang === 'zh' ? '✓ 基础宜忌建议' : '✓ Basic recommendations'"></li>
+                        <li x-text="currentLang === 'zh' ? '✓ 简单命理分析' : '✓ Simple astrology analysis'"></li>
+                    </ul>
+                    <button class="w-full py-3 bg-slate-600 rounded-lg font-semibold hover:bg-slate-500 transition-colors" 
+                            x-text="currentLang === 'zh' ? '免费使用' : 'Get Started'"></button>
+                </div>
+                <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl p-8 text-center relative glow">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-4 py-1 rounded-full text-sm font-bold"
+                         x-text="currentLang === 'zh' ? '推荐' : 'Popular'"></div>
+                    <h3 class="text-2xl font-bold mb-4" x-text="currentLang === 'zh' ? '专业版' : 'Pro Plan'"></h3>
+                    <div class="text-4xl font-bold mb-6">$9.9<span class="text-lg font-normal">/月</span></div>
+                    <ul class="space-y-3 mb-8">
+                        <li x-text="currentLang === 'zh' ? '✓ 所有免费功能' : '✓ All free features'"></li>
+                        <li x-text="currentLang === 'zh' ? '✓ 详细八字分析' : '✓ Detailed BaZi analysis'"></li>
+                        <li x-text="currentLang === 'zh' ? '✓ 紫微斗数排盘' : '✓ Purple Star chart'"></li>
+                        <li x-text="currentLang === 'zh' ? '✓ 西方星座解读' : '✓ Western astrology reading'"></li>
+                        <li x-text="currentLang === 'zh' ? '✓ 专业客服支持' : '✓ Professional support'"></li>
+                    </ul>
+                    <button class="w-full py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-slate-100 transition-colors"
+                            x-text="currentLang === 'zh' ? '立即订阅' : 'Subscribe Now'"></button>
+                </div>
+                <div class="bg-slate-700 rounded-xl p-8 text-center">
+                    <h3 class="text-2xl font-bold mb-4" x-text="currentLang === 'zh' ? '终身版' : 'Lifetime Plan'"></h3>
+                    <div class="text-4xl font-bold mb-6">$99<span class="text-lg font-normal">/终身</span></div>
+                    <ul class="space-y-3 mb-8 text-slate-300">
+                        <li x-text="currentLang === 'zh' ? '✓ 所有专业功能' : '✓ All pro features'"></li>
+                        <li x-text="currentLang === 'zh' ? '✓ 无限次数测算' : '✓ Unlimited calculations'"></li>
+                        <li x-text="currentLang === 'zh' ? '✓ 专家在线咨询' : '✓ Expert consultation'"></li>
+                        <li x-text="currentLang === 'zh' ? '✓ 定制化报告' : '✓ Customized reports'"></li>
+                    </ul>
+                    <button class="w-full py-3 bg-yellow-500 text-black rounded-lg font-semibold hover:bg-yellow-400 transition-colors"
+                            x-text="currentLang === 'zh' ? '一次购买' : 'Buy Once'"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-700 py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold">F</span>
+                        </div>
+                        <span class="text-xl font-bold">FortuneZodiacAI</span>
+                    </div>
+                    <p class="text-slate-400" x-text="currentLang === 'zh' ? '融合东西方智慧的AI运势平台' : 'AI fortune platform combining Eastern and Western wisdom'"></p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4" x-text="currentLang === 'zh' ? '产品功能' : 'Features'"></h4>
+                    <ul class="space-y-2 text-slate-400">
+                        <li><a href="#features" class="hover:text-blue-400 transition-colors cursor-pointer" x-text="currentLang === 'zh' ? '每日运势' : 'Daily Horoscope'"></a></li>
+                        <li><a href="#features" class="hover:text-blue-400 transition-colors cursor-pointer" x-text="currentLang === 'zh' ? '八字分析' : 'BaZi Analysis'"></a></li>
+                        <li><a href="#features" class="hover:text-blue-400 transition-colors cursor-pointer" x-text="currentLang === 'zh' ? '紫微斗数' : 'Purple Star Astrology'"></a></li>
+                        <li><a href="#features" class="hover:text-blue-400 transition-colors cursor-pointer" x-text="currentLang === 'zh' ? '星座占星' : 'Zodiac Astrology'"></a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4" x-text="currentLang === 'zh' ? '客户支持' : 'Support'"></h4>
+                    <ul class="space-y-2 text-slate-400">
+                        <li><a href="#how-it-works" class="hover:text-blue-400 transition-colors cursor-pointer" x-text="currentLang === 'zh' ? '使用指南' : 'User Guide'"></a></li>
+                        <li><a href="#faq" class="hover:text-blue-400 transition-colors cursor-pointer" x-text="currentLang === 'zh' ? '常见问题' : 'FAQ'"></a></li>
+                        <li><a href="mailto:auscook89@gmail.com" class="hover:text-blue-400 transition-colors cursor-pointer" x-text="currentLang === 'zh' ? '联系客服' : 'Contact Support'"></a></li>
+                        <li><button @click="showPrivacyModal = true" class="hover:text-blue-400 transition-colors cursor-pointer text-left" x-text="currentLang === 'zh' ? '隐私政策' : 'Privacy Policy'"></button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4" x-text="currentLang === 'zh' ? '联系我们' : 'Contact Us'"></h4>
+                    <ul class="space-y-2 text-slate-400">
+                        <li>fortunezodiacai.com</li>
+                        <li>auscook89@gmail.com</li>
+                        <li x-text="currentLang === 'zh' ? '在线客服：7x24小时' : 'Support: 24/7 Online'"></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
+                <p>&copy; 2024 FortuneZodiacAI. <span x-text="currentLang === 'zh' ? '版权所有 | 开发者：海绵' : 'All rights reserved | Developer: 海绵'"></span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Privacy Policy Modal -->
+    <div x-show="showPrivacyModal" x-transition.opacity class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" @click="showPrivacyModal = false">
+        <div @click.stop class="bg-slate-800 rounded-xl p-8 max-w-2xl max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold" x-text="currentLang === 'zh' ? '隐私政策' : 'Privacy Policy'"></h3>
+                <button @click="showPrivacyModal = false" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="text-slate-300 space-y-4">
+                <div x-show="currentLang === 'zh'">
+                    <h4 class="font-bold text-white mb-2">信息收集</h4>
+                    <p>我们仅收集您主动提供的姓名和出生日期信息，用于运势测算服务。</p>
+                    
+                    <h4 class="font-bold text-white mb-2 mt-4">信息使用</h4>
+                    <p>您的个人信息仅用于生成个性化的运势报告，我们不会将其用于其他目的。</p>
+                    
+                    <h4 class="font-bold text-white mb-2 mt-4">信息保护</h4>
+                    <p>我们采用业界标准的加密技术保护您的数据，不会向第三方分享您的个人信息。</p>
+                    
+                    <h4 class="font-bold text-white mb-2 mt-4">Cookie使用</h4>
+                    <p>我们使用必要的Cookie来改善用户体验，不会追踪您的个人行为。</p>
+                    
+                    <h4 class="font-bold text-white mb-2 mt-4">联系我们</h4>
+                    <p>如有隐私相关问题，请联系：auscook89@gmail.com</p>
+                </div>
+                
+                <div x-show="currentLang === 'en'">
+                    <h4 class="font-bold text-white mb-2">Information Collection</h4>
+                    <p>We only collect name and birth date information that you voluntarily provide for fortune calculation services.</p>
+                    
+                    <h4 class="font-bold text-white mb-2 mt-4">Information Usage</h4>
+                    <p>Your personal information is only used to generate personalized fortune reports, we will not use it for other purposes.</p>
+                    
+                    <h4 class="font-bold text-white mb-2 mt-4">Information Protection</h4>
+                    <p>We use industry-standard encryption technology to protect your data and will not share your personal information with third parties.</p>
+                    
+                    <h4 class="font-bold text-white mb-2 mt-4">Cookie Usage</h4>
+                    <p>We use necessary cookies to improve user experience, without tracking your personal behavior.</p>
+                    
+                    <h4 class="font-bold text-white mb-2 mt-4">Contact Us</h4>
+                    <p>For privacy-related questions, please contact: auscook89@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to top button -->
+    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+            class="fixed bottom-8 right-8 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors z-50">
+        <span class="text-white">↑</span>
+    </button>
+</body>
+</html>
