@@ -41,6 +41,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title x-text="currentLang === 'zh' ? 'AI智能运势测算 | 紫微+星座 | FortuneZodiacAI' : 'AI Horoscope Calculator | BaZi + Western Astrology | FortuneZodiacAI'"></title>
     
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0S4JGGRMZ4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0S4JGGRMZ4');
+    </script>
+    
     <!-- Meta Tags -->
     <meta name="description" x-bind:content="currentLang === 'zh' ? 'AI智能运势测算，融合紫微斗数、八字、星座占星学，提供专业的每日运势分析和命理解读' : 'AI-powered horoscope calculator combining BaZi, Purple Star Astrology, and Western astrology for professional daily fortune analysis'">
     <meta name="keywords" x-bind:content="currentLang === 'zh' ? '运势测算,紫微斗数,八字星座,中西合璧命理,AI算命,每日运势' : 'AI horoscope,BaZi astrology,daily zodiac fortune,East West astrology,fortune telling,astrology calculator'">
